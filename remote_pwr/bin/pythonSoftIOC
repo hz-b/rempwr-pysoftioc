@@ -1,0 +1,8 @@
+#!/home/emil/Apps/epics/R7.0.4.1/work/ioc/SISSY2EX/SISSY2_PWR_00/remote_pwr/bin/python3
+# -*- coding: utf-8 -*-
+import re
+import sys
+from softioc.__main__ import main
+if __name__ == '__main__':
+    sys.argv[0] = re.sub(r'(-script\.pyw|\.exe)?$', '', sys.argv[0])
+    sys.exit(main())
