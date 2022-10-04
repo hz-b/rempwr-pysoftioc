@@ -82,10 +82,12 @@ def emergency_off(value, index):
 
     #If we are any state other than "opened"
     if value != 2:
-        #power off everything
+        #power off everything except the biologic
         for channel_name, channel_pvs in records.items():
             num = int(channel_name)
-            channel_pvs["set"].set(0)
+            name = pwr_dev.get_port_name(num)
+            if name != "Biologic":
+                channel_pvs["set"].set(0)
 
 camonitor(monitor_pvs,emergency_off)
 
