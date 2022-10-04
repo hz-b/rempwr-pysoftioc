@@ -1,4 +1,5 @@
 # Import the basic framework components.
+from cothread.catools import caget, connect, camonitor,caput
 from softioc import softioc, builder
 import cothread
 
@@ -68,6 +69,25 @@ records[2]["set"] = builder.boolOut('CH2:SP',ZNAM="Off", ONAM="On",always_update
 records[3]["set"] = builder.boolOut('CH3:SP',ZNAM="Off", ONAM="On",always_update = True,on_update=lambda v: pwr_dev.set_port_status(3,v))
 records[4]["set"] = builder.boolOut('CH4:SP',ZNAM="Off", ONAM="On",always_update = True,on_update=lambda v: pwr_dev.set_port_status(4,v))
 
+# Set up monitors to the SSV
+
+"""
+If either of these are not "opened"/2 then power off everything
+ SSV01V01U212L:State
+ SSV01V01U212L:State
+"""
+monitor_pvs = ["SSV01V01U212L:State", "SSV01V01U212L:State"]
+#monitor_pvs = ["V12V01U212L:State1","V13V01U212L:State1"]
+def emergency_off(value, index):
+
+    #If we are any state other than "opened"
+    if value != 2:
+        #power off everything
+        for channel_name, channel_pvs in records.items():
+            num = int(channel_name)
+            channel_pvs["set"].set(0)
+
+camonitor(monitor_pvs,emergency_off)
 
 # Boilerplate get the IOC started
 builder.LoadDatabase()
